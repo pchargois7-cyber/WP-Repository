@@ -20,16 +20,34 @@
 | B. Custom app + GHL API | Small web app, login via magic link, reads Contacts and custom objects through the GHL API (Private Integration token) | Full control of layout and features | Needs hosting, security upkeep, developer |
 | C. Marketplace app (OAuth) | Registered GHL Marketplace app | Installable across sub-accounts, resellable | Most overhead; only worth it if sold to other businesses |
 
-**Recommendation:** run a 1-2 day Phase 0 spike on Option A. If it can show a customer's own Storage Items after login, use it. If not, go with Option B.
+**Decision (confirmed):** Option A. GHL's native portal can show a customer their own Storage Items after login, so we build there. Options B and C stay as fallbacks only if a display need can't be met.
 
 ## Authentication
 - Email and password or magic link, with password reset.
 - Match login email to the CRM contact; one contact, one login.
 - Staff accounts are separate from customer accounts.
 
-## CRM connection
-- If CSMS CRM **is** GHL: store Storage Items directly in GHL.
-- If it is a **separate system**: scheduled or webhook sync into GHL (one direction, CRM to GHL), with a log of failures and an alert to ops.
+## CRM connection (confirmed: CSMS CRM is proprietary and separate from GHL)
+The CSMS CRM stays the source of truth. A small **sync layer** copies the customer-visible fields into GHL, one direction only (CSMS CRM to GHL). GHL never writes back inventory.
+
+```
+CSMS CRM  --(export/API/webhook)-->  Sync service  --(GHL API)-->  GHL Contacts + Storage Item objects  -->  Customer portal
+```
+Sync service responsibilities:
+- Match each CSMS customer to a GHL contact by a stable key (CSMS customer ID stored in a GHL custom field; email is only a fallback).
+- Create, update, and archive Storage Items; never delete without a rule.
+- Run on a schedule (start: every 15 minutes) or on change events if the CRM can send them.
+- Log every run, retry failures, and alert ops on mismatches or failures.
+- Hold GHL credentials (Private Integration token) in a secrets store, not in GitHub.
+
+**Integration method, in order of preference** (to be decided in Phase 0 once we know what the CRM offers):
+1. CRM API or webhooks
+2. Scheduled database view or read replica (read-only account)
+3. Scheduled CSV/file export that the sync service ingests
+
+Because the sync service is code, the repo gains a `sync/` folder and needs a small host (e.g., a scheduled cloud function). Which runtime is chosen by the tech lead.
+
+Customer retrieval requests flow the other way as a **GHL task/notification to staff**; staff then act in the CSMS CRM. (Writing requests into the CSMS CRM is out of scope unless it exposes a safe API.)
 
 ## Security and privacy checklist
 - Customer can open only own records (test by trying another customer's ID).

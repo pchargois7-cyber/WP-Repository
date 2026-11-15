@@ -1,6 +1,6 @@
 # CSMS Customer Storage Portal
 
-A secure customer login for **Curtis Specialized Moving & Storage (CSMS)** where customers can see what they have in storage. Built on GoHighLevel (GHL) and connected to the CSMS CRM.
+A secure customer login for **Curtis Specialized Moving & Storage (CSMS)** where customers can see what they have in storage. Built on GoHighLevel (GHL) with a one-way sync from the proprietary CSMS CRM.
 
 **Analogy:** think of the portal as the front window of a warehouse. Customers can look in and see their own items, but only the CRM (the back office) can change what is on the shelves. The portal never edits inventory; it only displays it.
 
@@ -15,4 +15,4 @@ A secure customer login for **Curtis Specialized Moving & Storage (CSMS)** where
 | [docs/STAKEHOLDER_EMAIL.md](docs/STAKEHOLDER_EMAIL.md) | Kickoff email draft |
 
 ## Status
-Phase 0 (Discovery). Open questions are tracked as GitHub Issues labeled `decision-needed`.
+Phase 0 (Discovery). Decided: native GHL portal (Option A) plus a CSMS CRM-to-GHL sync. Open questions are tracked as GitHub Issues labeled `decision-needed`.
