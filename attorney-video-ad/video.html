@@ -1,0 +1,249 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+:root{--navy:#0b1f3a;--navy2:#14335f;--purple:#6b2fb3;--purple2:#4a1f86;--gold:#f2b632;--green:#1f9d63;--red:#d94a4a;--ink:#0b1f3a;--gray:#6b7686}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1080px;overflow:hidden;background:var(--navy);font-family:"Inter","Helvetica Neue",Arial,sans-serif;color:#fff}
+#stage{position:relative;width:1080px;height:1080px;overflow:hidden}
+.scene{position:absolute;inset:0;opacity:0}
+.abs{position:absolute}
+.fx{opacity:0}
+.center{display:flex;align-items:center;justify-content:center;text-align:center}
+
+/* scene A */
+#A{background:var(--navy)}
+#A .t{left:90px;right:90px;top:0;bottom:0;font-size:92px;font-weight:800;line-height:1.12;letter-spacing:-1.5px;display:flex;align-items:center}
+#A .w{display:inline-block;opacity:0;margin-right:.26em}
+#A .hl{color:var(--gold)}
+
+/* scene B */
+#B{background:var(--navy)}
+.lbl{font-size:24px;font-weight:700;letter-spacing:3px;color:#8fa6c8;text-transform:uppercase}
+#prompt{left:100px;top:110px;width:880px;height:110px;background:#fff;border-radius:22px;color:var(--ink);font-size:30px;font-weight:500;padding:0 36px;display:flex;align-items:center;box-shadow:0 14px 40px rgba(0,0,0,.35);white-space:nowrap;font-family:"DejaVu Sans Mono",monospace}
+.caret{display:inline-block;width:3px;height:44px;background:var(--purple);margin-left:3px;vertical-align:middle}
+#gen{left:170px;top:300px;width:740px;height:690px;background:#eceff3;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.45);overflow:hidden}
+#gen .bar{height:64px;background:#cfd5dd;display:flex;align-items:center;padding:0 28px;gap:14px}
+#gen .logo{width:120px;height:24px;background:#aab2bd;border-radius:6px}
+#gen .nv{width:70px;height:14px;background:#b9c0ca;border-radius:6px;margin-left:auto}
+#gen .nv2{width:70px;height:14px;background:#b9c0ca;border-radius:6px}
+#gen h2{margin:70px 50px 18px;font-size:60px;font-weight:700;color:#4a525d;line-height:1.08}
+#gen p{margin:0 50px;font-size:28px;color:#8a929d;line-height:1.4}
+#gen .btn{margin:46px 50px;width:240px;height:64px;border-radius:10px;background:#9aa3af;color:#fff;font-size:26px;font-weight:600;display:flex;align-items:center;justify-content:center}
+#gen .ph{margin:24px 50px 0;height:150px;background:#d9dee5;border-radius:12px}
+#looks{left:520px;top:880px;background:#fff;color:var(--ink);font-size:44px;font-weight:800;padding:16px 34px;border-radius:60px;box-shadow:0 10px 30px rgba(0,0,0,.4);display:flex;align-items:center;gap:14px}
+.tag{left:60px;background:var(--red);color:#fff;font-size:44px;font-weight:800;padding:18px 36px;border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.5);display:flex;align-items:center;gap:18px;border:4px solid #fff}
+.tag i{font-style:normal;background:#fff;color:var(--red);width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;line-height:1;padding-bottom:3px}
+
+/* scene C */
+#C{background:var(--navy2)}
+#C .head{left:70px;right:70px;top:90px;font-size:60px;font-weight:800;line-height:1.12;letter-spacing:-1px}
+#card{left:170px;top:380px;width:740px;height:430px;background:#fff;border-radius:14px;box-shadow:0 30px 70px rgba(0,0,0,.5);transform:rotate(-3deg)}
+#card .l1{position:absolute;left:44px;top:44px;width:200px;height:18px;background:#eef0f3;border-radius:8px}
+#card .l2{position:absolute;left:44px;bottom:60px;width:300px;height:12px;background:#f3f4f6;border-radius:6px}
+#card .l3{position:absolute;left:44px;bottom:36px;width:220px;height:12px;background:#f3f4f6;border-radius:6px}
+#mag{width:170px;height:170px;border-radius:50%;border:16px solid var(--gold);background:rgba(255,255,255,.18);box-shadow:0 14px 30px rgba(0,0,0,.35)}
+#mag:after{content:"";position:absolute;width:20px;height:110px;background:var(--gold);border-radius:10px;left:140px;top:150px;transform:rotate(-45deg);transform-origin:top center;margin-left:-8px}
+#nores{left:0;right:0;top:880px;font-size:50px;font-weight:800;color:var(--gold)}
+
+/* scene D */
+#D{background:#eef2f8;color:var(--ink)}
+#D .head{left:0;right:0;top:80px;font-size:78px;font-weight:800;letter-spacing:-1.5px}
+#D .head span{color:var(--purple)}
+.item{left:100px;width:880px;height:158px;background:#fff;border-radius:22px;box-shadow:0 12px 34px rgba(11,31,58,.14);display:flex;align-items:center;padding:0 34px;gap:30px}
+.item .n{flex:none;width:76px;height:76px;border-radius:50%;background:var(--purple);color:#fff;font-size:40px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.item .tt{font-size:44px;font-weight:800;letter-spacing:-.5px}
+.item .ss{font-size:28px;color:var(--gray);margin-top:6px}
+.item .ck{margin-left:auto;flex:none}
+
+/* scene E */
+#E{background:var(--navy)}
+#sb{left:100px;top:50px;width:880px;height:96px;border-radius:48px;background:#fff;color:var(--ink);font-size:36px;font-weight:500;display:flex;align-items:center;padding:0 40px;box-shadow:0 12px 36px rgba(0,0,0,.4)}
+#sb .mg{width:30px;height:30px;border:5px solid var(--gray);border-radius:50%;margin-right:22px;position:relative;flex:none}
+#sb .mg:after{content:"";position:absolute;width:5px;height:16px;background:var(--gray);right:-9px;bottom:-14px;transform:rotate(-45deg);border-radius:3px}
+#built{left:100px;top:180px;width:880px;height:640px;background:#fff;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;color:var(--ink)}
+#built .bar{height:74px;background:var(--navy2);display:flex;align-items:center;justify-content:space-between;padding:0 32px;color:#fff;font-weight:800;font-size:26px;letter-spacing:2px}
+#built .bar span{font-weight:600;letter-spacing:0;font-size:26px;color:var(--gold)}
+#built h2{margin:30px 36px 14px;font-size:50px;font-weight:800;line-height:1.1;letter-spacing:-1px}
+#built .chips{margin:0 36px;display:flex;flex-wrap:wrap;gap:12px}
+#built .chip{background:#efe6fa;color:var(--purple2);font-weight:700;font-size:24px;padding:10px 20px;border-radius:30px}
+#built .faq{margin:22px 36px 0}
+#built .q{border-top:2px solid #e4e8ee;padding:12px 0;font-size:28px;font-weight:600;display:flex;justify-content:space-between}
+#built .q b{color:var(--purple);font-size:32px}
+#built .cta{position:absolute;left:36px;bottom:26px;background:var(--green);color:#fff;font-size:30px;font-weight:800;padding:16px 34px;border-radius:12px}
+#found{left:640px;top:740px;background:var(--green);color:#fff;font-size:52px;font-weight:800;padding:14px 38px;border-radius:70px;border:5px solid #fff;box-shadow:0 14px 40px rgba(0,0,0,.5);display:flex;align-items:center;gap:14px}
+#ai{left:100px;top:850px;width:880px;display:flex;flex-direction:column;gap:14px}
+.bub{padding:18px 28px;border-radius:26px;font-size:28px;font-weight:600;max-width:760px}
+.bub.u{background:#2a4a7a;align-self:flex-end}
+.bub.a{background:#fff;color:var(--ink);align-self:flex-start}
+.bub.a b{color:var(--purple)}
+#disc{left:0;right:0;bottom:22px;font-size:20px;color:#7f93b3;text-align:center}
+
+/* scene F */
+#F{background:linear-gradient(160deg,var(--purple) 0%,var(--purple2) 100%)}
+#F .q{left:30px;right:30px;top:170px;font-size:78px;font-weight:800;line-height:1.06;letter-spacing:-3px;text-align:center}
+#F .q span{color:var(--gold);font-size:112px;display:inline-block;margin-top:14px;letter-spacing:-3px}
+#F .btn{left:210px;width:660px;top:600px;height:130px;background:var(--gold);color:var(--navy);border-radius:70px;font-size:54px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 16px 40px rgba(0,0,0,.35)}
+#F .url{left:0;right:0;top:770px;font-size:70px;font-weight:800;text-align:center}
+#F .by{left:0;right:0;top:920px;font-size:34px;font-weight:500;text-align:center;color:#e6d9f7;line-height:1.4}
+#F .by b{color:#fff}
+</style></head>
+<body><div id="stage">
+
+<!-- A -->
+<div class="scene" id="A" data-s="0" data-e="4.3" data-nofade="1">
+  <div class="abs t" id="Aw"></div>
+</div>
+
+<!-- B -->
+<div class="scene" id="B" data-s="4.0" data-e="21.4">
+  <div class="abs lbl fx" style="left:100px;top:70px" data-in="4.4" data-dur=".4" data-fx="up">The prompt</div>
+  <div class="abs" id="prompt"><span id="ptxt"></span><span class="caret" id="caret"></span></div>
+  <div class="abs" id="gen" data-in="9.0" data-dur=".6" data-fx="pop">
+    <div class="bar"><div class="logo"></div><div class="nv"></div><div class="nv2"></div></div>
+    <h2>Personal Injury Lawyer</h2>
+    <p>We fight for you. Contact us today for a free consultation.</p>
+    <div class="ph"></div>
+    <div class="btn">Contact Us</div>
+  </div>
+  <div class="abs fx" id="looks" data-in="11.2" data-dur=".35" data-fx="stamp" data-out="12.9">
+    <svg width="46" height="46" viewBox="0 0 46 46"><circle cx="23" cy="23" r="23" fill="#1f9d63"/><path d="M12 24l7 7 15-16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Looks fine.
+  </div>
+  <div class="abs fx tag" style="top:390px;transform:rotate(-3deg)" data-in="13.7" data-dur=".35" data-fx="stamp"><i>×</i>No city named</div>
+  <div class="abs fx tag" style="top:560px;left:110px;transform:rotate(2deg)" data-in="16.0" data-dur=".35" data-fx="stamp"><i>×</i>No case types listed</div>
+  <div class="abs fx tag" style="top:730px;left:50px;transform:rotate(-2deg)" data-in="18.3" data-dur=".35" data-fx="stamp"><i>×</i>No client questions answered</div>
+</div>
+
+<!-- C -->
+<div class="scene" id="C" data-s="21.1" data-e="26.9">
+  <div class="abs head fx" data-in="21.5" data-dur=".5" data-fx="up">To Google and AI assistants, that page is a <span style="color:var(--gold)">blank business card.</span></div>
+  <div class="abs fx" id="card" data-in="22.0" data-dur=".5" data-fx="pop"><div class="l1"></div><div class="l2"></div><div class="l3"></div></div>
+  <div class="abs" id="mag"></div>
+  <div class="abs center fx" id="nores" data-in="24.9" data-dur=".35" data-fx="stamp">Nothing found.</div>
+</div>
+
+<!-- D -->
+<div class="scene" id="D" data-s="26.6" data-e="35.8">
+  <div class="abs center head fx" data-in="26.9" data-dur=".5" data-fx="up">Start with a&nbsp;<span>full brief</span></div>
+  <div class="abs item fx" style="top:240px" data-in="27.9" data-dur=".45" data-fx="up">
+    <div class="n">1</div><div><div class="tt">Practice areas</div><div class="ss">Truck · Car · Wrongful death</div></div>
+    <svg class="ck" width="56" height="56" viewBox="0 0 46 46"><circle cx="23" cy="23" r="23" fill="#1f9d63"/><path d="M12 24l7 7 15-16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <div class="abs item fx" style="top:420px" data-in="29.6" data-dur=".45" data-fx="up">
+    <div class="n">2</div><div><div class="tt">Cities served</div><div class="ss">Beaumont · Port Arthur · Orange</div></div>
+    <svg class="ck" width="56" height="56" viewBox="0 0 46 46"><circle cx="23" cy="23" r="23" fill="#1f9d63"/><path d="M12 24l7 7 15-16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <div class="abs item fx" style="top:600px" data-in="31.4" data-dur=".45" data-fx="up">
+    <div class="n">3</div><div><div class="tt">Real client questions</div><div class="ss">“How long do I have to file?”</div></div>
+    <svg class="ck" width="56" height="56" viewBox="0 0 46 46"><circle cx="23" cy="23" r="23" fill="#1f9d63"/><path d="M12 24l7 7 15-16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <div class="abs item fx" style="top:780px" data-in="33.2" data-dur=".45" data-fx="up">
+    <div class="n">4</div><div><div class="tt">Page structure</div><div class="ss">Headline → Cases → FAQ → Call now</div></div>
+    <svg class="ck" width="56" height="56" viewBox="0 0 46 46"><circle cx="23" cy="23" r="23" fill="#1f9d63"/><path d="M12 24l7 7 15-16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+</div>
+
+<!-- E -->
+<div class="scene" id="E" data-s="35.5" data-e="45.8">
+  <div class="abs fx" id="built" data-in="36.0" data-dur=".6" data-fx="pop">
+    <div class="bar">SAMPLE LAW FIRM<span>409-555-0100</span></div>
+    <h2>Truck Accident Lawyer in Beaumont, TX</h2>
+    <div class="chips"><div class="chip">Truck accidents</div><div class="chip">Car crashes</div><div class="chip">Wrongful death</div></div>
+    <div class="faq">
+      <div class="q">What should I do after a truck accident?<b>+</b></div>
+      <div class="q">How long do I have to file in Texas?<b>+</b></div>
+      <div class="q">Do I pay if we don’t win?<b>+</b></div>
+    </div>
+    <div class="cta">Call 409-555-0100</div>
+  </div>
+  <div class="abs fx" id="sb" data-in="39.0" data-dur=".35" data-fx="up"><div class="mg"></div><span id="stxt"></span><span class="caret" id="scaret" style="height:40px;background:var(--gray)"></span></div>
+  <div class="abs fx" id="found" data-in="43.0" data-dur=".4" data-fx="stamp">
+    <svg width="50" height="50" viewBox="0 0 46 46"><circle cx="23" cy="23" r="23" fill="#fff"/><path d="M12 24l7 7 15-16" fill="none" stroke="#1f9d63" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>Found
+  </div>
+  <div class="abs" id="ai">
+    <div class="bub u fx" data-in="43.7" data-dur=".35" data-fx="up">Who should I call after a truck accident in Beaumont?</div>
+    <div class="bub a fx" data-in="44.6" data-dur=".35" data-fx="up">Call <b>Sample Law Firm</b> — truck accident cases in Beaumont, free consultation.</div>
+  </div>
+  <div class="abs" id="disc">Sample firm for illustration only.</div>
+</div>
+
+<!-- F -->
+<div class="scene" id="F" data-s="45.5" data-e="54.5" data-nofadeout="1">
+  <div class="abs q fx" data-in="45.9" data-dur=".5" data-fx="up">Is your firm’s website<br><span>built to be found?</span></div>
+  <div class="abs btn fx" data-in="50.6" data-dur=".45" data-fx="pop">Book your free check</div>
+  <div class="abs url fx" data-in="51.6" data-dur=".45" data-fx="up">texasmarcom.com</div>
+  <div class="abs by fx" data-in="48.3" data-dur=".5" data-fx="up"><b>Paul Chargois</b><br>Texas Marketing Communications</div>
+</div>
+
+</div>
+<script>
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const easeOut=x=>1-Math.pow(1-x,3);
+const easeBack=x=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+
+// scene A words
+const aText="Anyone can ask AI to build a law firm website.";
+const aw=document.getElementById('Aw');
+const aWords=aText.split(' ');
+aw.innerHTML='<div>'+aWords.map((w,i)=>`<span class="w ${w==='AI'?'hl':''}" data-i="${i}">${w}</span>`).join('')+'</div>';
+const aSpans=[...aw.querySelectorAll('.w')];
+
+const pFull="build me a personal injury lawyer website";
+const sFull="truck accident lawyer in Beaumont";
+const ptxt=document.getElementById('ptxt'),caret=document.getElementById('caret');
+const stxt=document.getElementById('stxt'),scaret=document.getElementById('scaret');
+const mag=document.getElementById('mag');
+const scenes=[...document.querySelectorAll('.scene')];
+const fxs=[...document.querySelectorAll('[data-in]')];
+const gen=document.getElementById('gen'),prompt=document.getElementById('prompt');
+
+function render(t){
+  // scenes
+  for(const s of scenes){
+    const st=+s.dataset.s,en=+s.dataset.e;
+    let o=s.dataset.nofade? (t>=st?1:0) : clamp((t-st)/.35);
+    if(t>en+.45) o=0;
+    s.style.opacity=o; s.style.zIndex=Math.round(st);
+  }
+  // generic fx
+  for(const e of fxs){
+    const ti=+e.dataset.in,d=+e.dataset.dur,fx=e.dataset.fx;
+    let p=clamp((t-ti)/d);
+    let op=p>0?1:0, tf='';
+    const base=e.style.getPropertyValue('--rot')||'';
+    if(fx==='up'){op=easeOut(p);tf=`translateY(${(1-easeOut(p))*40}px)`}
+    else if(fx==='pop'){op=easeOut(p);tf=`scale(${.92+.08*easeOut(p)})`}
+    else if(fx==='stamp'){op=clamp(p*3);tf=`scale(${1.7-.7*easeBack(p)})`}
+    if(e.dataset.out){const o=clamp((+e.dataset.out-t)/.3);op*=o}
+    e.style.opacity=op;
+    const rot=e.dataset.rot|| (e.style.transform.match(/rotate\([^)]*\)/)||[''])[0];
+    if(!e.dataset.rot) e.dataset.rot=rot;
+    e.style.transform=(e.dataset.rot||'')+' '+tf;
+  }
+  // scene A word reveal (0.2s -> 3.5s)
+  aSpans.forEach((s,i)=>{const t0=.2+i*0.31;const p=clamp((t-t0)/.3);s.style.opacity=easeOut(p);s.style.transform=`translateY(${(1-easeOut(p))*24}px)`});
+  // prompt typing
+  const pp=clamp((t-4.7)/(8.7-4.7));
+  ptxt.textContent=pFull.slice(0,Math.round(pFull.length*pp));
+  caret.style.opacity=(t>=4.6&&t<9.4)?(Math.floor(t*2.2)%2?0.2:1):0;
+  // prompt dims when problems start
+  prompt.style.opacity=t<4.4?0:(t<13?1:Math.max(.25,1-(t-13)/1.0*.75));
+  // generic page dims as tags appear
+  if(t>13) gen.style.filter=`brightness(${Math.max(.6,1-(t-13)*.25)})`; else gen.style.filter='';
+  // scene C magnifier
+  if(t>22.4){
+    const k=clamp((t-22.4)/2.6);
+    const x=300+420*k+Math.sin(k*9)*0;
+    const y=500+Math.sin(k*6.5)*90;
+    const a=clamp((t-22.4)/.3);
+    mag.style.opacity=a; mag.style.left=(x-85)+'px'; mag.style.top=(y-85)+'px';
+  } else mag.style.opacity=0;
+  // scene E search typing
+  const sp=clamp((t-39.4)/(42.7-39.4));
+  stxt.textContent=sFull.slice(0,Math.round(sFull.length*sp));
+  scaret.style.opacity=(t>=39.3&&t<43.5)?(Math.floor(t*2.2)%2?0.2:1):0;
+}
+window.render=render;
+render(0);
+</script>
+</body></html>
